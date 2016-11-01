@@ -28,6 +28,8 @@ function promisify(client) {
         });
       });
     };
+
+    return client;
   });
 }
 
