@@ -1,6 +1,6 @@
 {
   "name": "grpc-promisify",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Make gRPC client promisify",
   "main": "src/index.js",
   "scripts": {
