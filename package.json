@@ -1,0 +1,24 @@
+{
+  "name": "grpc-promisify",
+  "version": "0.0.1",
+  "description": "A grpc client promisify tool",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "mocha test",
+    "preversion": "npm test",
+    "version": "git add -A",
+    "postversion": "git push && git push --tags"
+  },
+  "keywords": [
+    "grpc",
+    "promise",
+    "promisify",
+    "promiseify"
+  ],
+  "author": "jiangq.leaves@gmail.com",
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.1.2"
+  }
+}
