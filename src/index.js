@@ -11,6 +11,7 @@ function promisify(client) {
   Object.keys(Object.getPrototypeOf(client)).forEach(functionName => {
     const originalFunction = client[functionName];
 
+    client[`_${functionName}`] = originalFunction;
     client[functionName] = (request, callback) => {
       if (callback && typeof callback === 'function') {
         return originalFunction.call(client, request, (error, response) => {
