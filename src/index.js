@@ -9,6 +9,10 @@
  */
 function promisify(client) {
   Object.keys(Object.getPrototypeOf(client)).forEach(functionName => {
+    // Members starting with '$' are internal only, gRPC methods cannot start with '$'
+    if (functionName.startsWith('$')) {
+      return;
+    }
     const originalFunction = client[functionName];
 
     client[functionName] = (request, callback) => {
@@ -28,6 +32,8 @@ function promisify(client) {
         });
       });
     };
+    // Reattach the client interceptors
+    client[functionName].interceptors = originalFunction.interceptors;
   });
 }
 
