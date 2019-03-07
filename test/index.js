@@ -12,7 +12,7 @@ describe('test', () => {
   it('normal thunk function should be ok', done => {
     const client = {};
     Object.setPrototypeOf(client, {
-      rpcA(request, callback) {
+      rpcA(request, options, callback) {
         process.nextTick(() => callback(null, {name: request.user}));
       }
     });
@@ -27,7 +27,7 @@ describe('test', () => {
   it('normal thunk function should be ok with error', done => {
     const client = {};
     Object.setPrototypeOf(client, {
-      rpcA(request, callback) {
+      rpcA(request, options, callback) {
         process.nextTick(() => callback(new Error('error')));
       }
     });
@@ -40,10 +40,29 @@ describe('test', () => {
     });
   });
 
+  it('normal thunk function should pass options ', done => {
+    const client = {};
+    Object.setPrototypeOf(client, {
+      rpcA(request, options, callback) {
+        expect(options).to.be.an.instanceof(Object);
+        expect(options.deadline).to.be.an.instanceof(Date);
+        process.nextTick(() => callback(null, {name: request.user}));
+      }
+    });
+    promisify(client);
+
+    var deadline = new Date(Date.now() + 1000);
+    client.rpcA({user: 'hello'}, {deadline: deadline}, (err, res) => {
+      expect(err).to.be.null;
+      expect(res.name).to.equal('hello');
+      done();
+    });
+  });
+
   it('promise should be ok ', done => {
     const client = {};
     Object.setPrototypeOf(client, {
-      rpcA(request, callback) {
+      rpcA(request, options, callback) {
         process.nextTick(() => callback(null, {name: request.user}));
       }
     });
@@ -60,7 +79,7 @@ describe('test', () => {
   it('promise should be ok with error ', done => {
     const client = {};
     Object.setPrototypeOf(client, {
-      rpcA(request, callback) {
+      rpcA(request, options, callback) {
         process.nextTick(() => callback(new Error('error')));
       }
     });
@@ -73,6 +92,26 @@ describe('test', () => {
       expect(err).to.be.an.instanceof(Error);
       expect(err.message).to.equal('error');
       done();
+    });
+  });
+
+  it('promise should pass options ', done => {
+    const client = {};
+    Object.setPrototypeOf(client, {
+      rpcA(request, options, callback) {
+        expect(options).to.be.an.instanceof(Object);
+        expect(options.deadline).to.be.an.instanceof(Date);
+        process.nextTick(() => callback(null, {name: request.user}));
+      }
+    });
+    promisify(client);
+
+    var deadline = new Date(Date.now() + 1000);
+    client.rpcA({user: 'hello'}, {deadline: deadline}).then(res => {
+      expect(res.name).to.equal('hello');
+      done();
+    }).catch(err => {
+      done(new Error('should not error'));
     });
   });
 });
